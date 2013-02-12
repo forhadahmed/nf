@@ -59,7 +59,7 @@ def bytes (*bytes):
 #end def
  
 
-def ip (ip, pad):
+def ip (ip, pad=0):
     try: # IPv4
         addr = socket.inet_pton(socket.AF_INET, ip)
         if pad: 
