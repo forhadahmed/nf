@@ -22,7 +22,7 @@ Methods
 Examples
 ========
 
-BGP Example (`bgp.py`)
+BGP Example `bgp.py`
 
 Write a BGP common header followed by an OPEN message:
  
