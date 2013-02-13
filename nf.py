@@ -45,17 +45,58 @@ def debug_end(block):
 
 
 
-def nf_length():
-    pass
+def nf_length(buffer):
+    return len(buffer)
+#end def
+
+
+def nf_rewrite_(buffer, replace, offset, length):
+    buffer = buffer[:offset] + replace + buffer[offset+length:]
+    return buffer
+#end def
+
+
+def nf_int_buffer(value, length):
+    sys.stderr.write("LEN: %d\n" % value)
+    buffer = ''
+    if length == 1:
+        buffer = struct.pack("!B", value)
+    elif length == 2:
+        buffer = struct.pack("!H", value)
+    elif length == 4:
+        buffer = struct.pack("!L", value)
+    elif length == 8:    
+        buffer = struct.pack("!Q", value)
+    else:
+        raise Exception, "invalid rewrite length: %d" % length
+    #end if
+    return buffer
 #end def
 
 
 def nf_rewrite(block):
-    for r in block['rewrites']:
-                
-        pass
 
+    buffer = block['buffer']
+
+    for r in block['rewrites']:
+        offset = r['offset']
+        length = r['length']
+        value  = r['func'](block['buffer'])            
+        if type(value) is int:
+            value = nf_int_buffer(value, length)
+            buffer = nf_rewrite_(buffer, value, offset, length)
+        elif type(value) is str:
+            if len(value) != length:
+                raise Exception, "rewrite length mismatch %s", r['func']
+            #end if
+            buffer = nf_rewrite_(buffer, value, offset, length)
+        else:
+            raise Exception, "invalid value from  %s" % r['func']
+        #end if
     #end for
+
+    block['buffer'] = buffer
+
 #end def
 
 
@@ -126,7 +167,7 @@ def length(size):
     top['rewrites'].append(rewrite)
     
     # fill the buffer space with blank bytes
-    for i in xrange(0,size): byte(0)
+    for i in xrange(0,size): byte(0xff)
 #end def
 
 
