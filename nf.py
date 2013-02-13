@@ -110,6 +110,7 @@ def nf_write(b):
     hex = struct.pack("!B", b)
     if len(nf_blocks) == 0:
         sys.stdout.write(hex)
+        sys.stdout.flush()
         return
     #end if
     nf_buffer(hex)
@@ -145,6 +146,7 @@ def end():
         top['length'] += pop['length']
     else:
         sys.stdout.write(pop['buffer'])
+        sys.stdout.flush()
     #end if
 #end def
 
