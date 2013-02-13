@@ -224,6 +224,13 @@ def bytes (*bytes):
         byte(b)
     #end for
 #end def
+
+
+def data(s):
+    for b in s:
+        byte(b)
+    #end for
+#end def
  
 
 def ip (ip, pad=0):
