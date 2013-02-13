@@ -245,3 +245,10 @@ def ip (ip, pad=0):
     for b in addr: byte(ord(b))
 #end def
 
+
+def pad(bytes, value=0):
+    for i in xrange(0, bytes):
+        byte(value)
+    #end for
+#end def
+
