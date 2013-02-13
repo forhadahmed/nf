@@ -173,7 +173,7 @@ def length(size):
 #end def
 
 
-def sleep(s):
+def sleep(s=0):
     if s == 0:
         while 1: raw_input()
     else:
