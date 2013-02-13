@@ -1,5 +1,5 @@
 #
-#  NF - [N]etwork message [F]ormatter
+#  nf - [n]etwork message [f]ormatter
 #   
 #  Usage:
 # 
@@ -17,11 +17,16 @@ import sys
 import struct
 import socket
 
+
+###############################################################################
+
+
 nf_blocks = []
 
 def debug_indent():
     for i in xrange(0, len(nf_blocks)): sys.stderr.write('  ')
 #end def
+
 
 def debug_start(block):
     debug_indent()
@@ -37,6 +42,41 @@ def debug_end(block):
     debug_indent()
     sys.stderr.write("END [%s:%02d]\n" % (block['name'], block['length']))
 #end def
+
+
+
+def nf_length():
+    pass
+#end def
+
+
+def nf_rewrite(block):
+    for r in block['rewrites']:
+                
+        pass
+
+    #end for
+#end def
+
+
+def nf_buffer(hex):
+    top = nf_blocks[-1]
+    top['buffer'] += hex
+    top['length'] += 1
+#end def
+
+
+def nf_write(b):
+    hex = struct.pack("!B", b)
+    if len(nf_blocks) == 0:
+        sys.stdout.write(hex)
+        return
+    #end if
+    nf_buffer(hex)
+#end def
+
+
+###############################################################################
 
 
 def start(name=''):
@@ -69,20 +109,6 @@ def end():
 #end def
 
 
-def nf_length():
-    pass
-#end def
-
-
-def nf_rewrite(block):
-    for r in block['rewrites']:
-                
-        pass
-
-    #end for
-#end def
-
-
 def length(size):
     if len(nf_blocks) == 0:
         raise Exception, "nf.length() used outside start/end block"
@@ -104,21 +130,7 @@ def length(size):
 #end def
 
 
-def nf_buffer(hex):
-    top = nf_blocks[-1]
-    top['buffer'] += hex
-    top['length'] += 1
-#end def
-
-
-def nf_write(b):
-    hex = struct.pack("!B", b)
-    if len(nf_blocks) == 0:
-        sys.stdout.write(hex)
-        return
-    #end if
-    nf_buffer(hex)
-#end def
+###############################################################################
 
 
 def byte (b):
@@ -181,9 +193,4 @@ def ip (ip, pad=0):
     #end try IPv4
     for b in addr: byte(ord(b))
 #end def
-
-
-
-
-
 
