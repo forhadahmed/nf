@@ -127,7 +127,7 @@ def start(name=''):
     top['buffer'] = ''
     top['rewrites'] = []
 
-    debug_start(top)
+    #debug_start(top)
  
     nf_blocks.append(top)
 #end def 
@@ -136,7 +136,7 @@ def start(name=''):
 def end():
     pop = nf_blocks.pop()
  
-    debug_end(pop)
+    #debug_end(pop)
 
     nf_rewrite(pop)
 
