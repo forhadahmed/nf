@@ -45,7 +45,6 @@ def debug_end(block):
 #end def
 
 
-
 def nf_length(buffer):
     return len(buffer)
 #end def
@@ -175,7 +174,7 @@ def length(size):
 
 def sleep(s=0):
     if s == 0:
-        while 1: raw_input()
+        time.sleep(0xFFFFFFF)
     else:
         time.sleep(s)
     #end if
