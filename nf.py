@@ -14,6 +14,7 @@
 #
 
 import sys
+import time
 import struct
 import socket
 
@@ -169,6 +170,15 @@ def length(size):
     
     # fill the buffer space with blank bytes
     for i in xrange(0,size): byte(0xff)
+#end def
+
+
+def sleep(s):
+    if s == 0:
+        while 1: raw_input()
+    else:
+        time.sleep(s)
+    endif
 #end def
 
 
