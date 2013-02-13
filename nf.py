@@ -15,13 +15,74 @@
 
 import sys
 import socket
+
+nfblocks = []
+
+def debug_start(block):
+    for i in xrange(0,len(nfblocks)):
+        sys.stderr.write('  ')
+    #end for
+    sys.stderr.write("START [%s]\n" % block['name'])
+#end def
+
+
+def debug_end(block):
+    for i in xrange(0, len(nfblocks)):
+        sys.stderr.write('  ')
+    #end for
+    sys.stderr.write("END [%s:%d]\n" % (block['name'], block['length']))
+#end def
+
+
+def start(name=''):
+    top = dict()
+    top['name'] = name
+    top['length'] = 0
+    top['buffer'] = ''
+
+    debug_start(top)
  
+    nfblocks.append(top)
+#end def 
+
+
+def end():
+    pop = nfblocks.pop()
+ 
+    debug_end(pop)
+
+    if len(nfblocks) > 0:
+        top = nfblocks[-1]
+        top['buffer'] += pop['buffer']
+        top['length'] += pop['length']
+    else:
+        sys.stdout.write(pop['buffer'])
+    #end if
+#end def
+
+
+def nf_buffer(hex):
+    top = nfblocks[-1]
+    top['buffer'] += hex
+    top['length'] += 1
+#end def
+
+
+def nf_write(b):
+    hex = ('\\x%02x' % b).decode('string_escape')
+    if len(nfblocks) == 0:
+        sys.stdout.write(hex)
+        return
+    #end if
+    nf_buffer(hex)
+#end def
+
 
 def byte (b):
     if b > 0xFF:
         raise Exception, 'byte value > 0xFF';
     #end if
-    sys.stdout.write(('\\x%02x' % b).decode('string_escape'));
+    nf_write(b)
 #end def
 
 
