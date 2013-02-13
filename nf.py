@@ -14,23 +14,28 @@
 #
 
 import sys
+import struct
 import socket
 
-nfblocks = []
+nf_blocks = []
+
+def debug_indent():
+    for i in xrange(0, len(nf_blocks)): sys.stderr.write('  ')
+#end def
 
 def debug_start(block):
-    for i in xrange(0,len(nfblocks)):
-        sys.stderr.write('  ')
-    #end for
-    sys.stderr.write("START [%s]\n" % block['name'])
+    debug_indent()
+    sys.stderr.write("BEG [%s:%02d]\n" % (block['name'], block['length']))
 #end def
 
 
 def debug_end(block):
-    for i in xrange(0, len(nfblocks)):
-        sys.stderr.write('  ')
+    for r in block['rewrites']:
+        debug_indent()
+        sys.stderr.write("LEN [%d:%d]\n" % (r['offset'], r['length']))
     #end for
-    sys.stderr.write("END [%s:%d]\n" % (block['name'], block['length']))
+    debug_indent()
+    sys.stderr.write("END [%s:%02d]\n" % (block['name'], block['length']))
 #end def
 
 
@@ -39,20 +44,23 @@ def start(name=''):
     top['name'] = name
     top['length'] = 0
     top['buffer'] = ''
+    top['rewrites'] = []
 
     debug_start(top)
  
-    nfblocks.append(top)
+    nf_blocks.append(top)
 #end def 
 
 
 def end():
-    pop = nfblocks.pop()
+    pop = nf_blocks.pop()
  
     debug_end(pop)
 
-    if len(nfblocks) > 0:
-        top = nfblocks[-1]
+    nf_rewrite(pop)
+
+    if len(nf_blocks) > 0:
+        top = nf_blocks[-1]
         top['buffer'] += pop['buffer']
         top['length'] += pop['length']
     else:
@@ -61,16 +69,51 @@ def end():
 #end def
 
 
+def nf_length():
+    pass
+#end def
+
+
+def nf_rewrite(block):
+    for r in block['rewrites']:
+                
+        pass
+
+    #end for
+#end def
+
+
+def length(size):
+    if len(nf_blocks) == 0:
+        raise Exception, "nf.length() used outside start/end block"
+    #end if
+
+    if size < 0 or size > 8:
+        raise Exception, "nf.length() size '%d' invalid" % size
+    #end if
+
+    top = nf_blocks[-1]
+    rewrite = dict()
+    rewrite['func'] = nf_length 
+    rewrite['offset'] = top['length']
+    rewrite['length'] = size
+    top['rewrites'].append(rewrite)
+    
+    # fill the buffer space with blank bytes
+    for i in xrange(0,size): byte(0)
+#end def
+
+
 def nf_buffer(hex):
-    top = nfblocks[-1]
+    top = nf_blocks[-1]
     top['buffer'] += hex
     top['length'] += 1
 #end def
 
 
 def nf_write(b):
-    hex = ('\\x%02x' % b).decode('string_escape')
-    if len(nfblocks) == 0:
+    hex = struct.pack("!B", b)
+    if len(nf_blocks) == 0:
         sys.stdout.write(hex)
         return
     #end if
