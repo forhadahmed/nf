@@ -178,7 +178,7 @@ def sleep(s=0):
         while 1: raw_input()
     else:
         time.sleep(s)
-    endif
+    #end if
 #end def
 
 
