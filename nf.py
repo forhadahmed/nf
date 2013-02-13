@@ -57,7 +57,6 @@ def nf_rewrite_(buffer, replace, offset, length):
 
 
 def nf_int_buffer(value, length):
-    sys.stderr.write("LEN: %d\n" % value)
     buffer = ''
     if length == 1:
         buffer = struct.pack("!B", value)
