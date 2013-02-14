@@ -235,7 +235,7 @@ def bytes (*bytes):
 
 def data(s):
     for b in s:
-        byte(b)
+        byte(ord(b))
     #end for
 #end def
  
