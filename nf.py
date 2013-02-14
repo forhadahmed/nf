@@ -133,8 +133,12 @@ def start(name=''):
 #end def 
 
 
-def end():
+def end(hold=0):
     pop = nf_blocks.pop()
+
+    if hold and len(nf_blocks) > 0:
+        raise Exception, "end(1) used in non-final block"
+    #end if
  
     #debug_end(pop)
 
@@ -145,8 +149,11 @@ def end():
         top['buffer'] += pop['buffer']
         top['length'] += pop['length']
     else:
-        sys.stdout.write(pop['buffer'])
-        sys.stdout.flush()
+        if not hold:
+            sys.stdout.write(pop['buffer'])
+            sys.stdout.flush()
+        #end if
+        return pop['buffer']
     #end if
 #end def
 
